@@ -4,7 +4,7 @@ import Card from './Card';
 import { userInterface } from '../App';
 import axios from 'axios'
 
-type dataType = { users: userInterface[], page: number, totalPages: number, totalUsers: number }
+export type dataType = { users: userInterface[], page: number, totalPages: number, totalUsers: number }
 
 function PaginatedItems() {
 
@@ -50,8 +50,7 @@ function PaginatedItems() {
         setCurrentPage(event.selected + 1)
     };
 
-    const NextLabel = <div className="bg-blue-600 text-white py-1 px-2 rounded-md">{"Next >"}</div>
-    const PreviosLabel = <div className="bg-blue-600 text-white py-1 px-2 rounded-md">{"< Previous"}</div>
+   
     return (
         <>
             <div className='flex flex-wrap gap-y-10 p-4 sm:p-10'>
@@ -68,7 +67,7 @@ function PaginatedItems() {
                     pageCount={pageCount}
                     className='flex gap-x-4 items-center justify-center'
                     pageClassName='px-2 bg-gray-300 py-1 rounded-md'
-                    activeClassName='bg-blue-500 text-white'
+                    activeClassName='bg-green-500 text-white'
                 />
             </div>
         </>
@@ -76,3 +75,6 @@ function PaginatedItems() {
 }
 
 export default PaginatedItems
+
+export const NextLabel = <div className="bg-blue-600 text-white py-1 px-2 rounded-md">{"Next >"}</div>
+export const PreviosLabel = <div className="bg-blue-600 text-white py-1 px-2 rounded-md">{"< Previous"}</div>

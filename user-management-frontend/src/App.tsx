@@ -2,68 +2,90 @@ import { useEffect, useState } from 'react'
 import './App.css'
 import axios from 'axios'
 import Card from './components/Card'
-import PaginatedItems from './components/PaginatedItems'
+import Pagination from './components/Pagination'
+import SideBar from './components/SideBar'
 
 export interface userInterface {
-  id:number
+  id: number
   first_name: string
   last_name: string
   email: string
   available: boolean
   domain: string
   avatar: string
+  gender:string
 
 }
-function App() {
+type dataType = {
+  users: userInterface[],
+  page: number,
+  totalPages: number,
+  totalUsers: number
+}
 
-  const [users, setUsers] = useState<userInterface[]>([])
+function App() {
+  const [name, setName] = useState('')
+  const [searcgResults, setSearchResults] = useState<dataType>({} as dataType)
   const [currentPage, setCurrentPage] = useState(1);
-  const usersPerPage = 20
-  const [info, setInfo] = useState({
-    page: 1,
-    totalPages: 50,
-    totalUsers: 1000
+  const [filters, setFilters] = useState({
+    domain: '',
+    gender: '',
+    available: ''
   })
 
+  const handlePageClick = (event: any) => {
+    setCurrentPage(event.selected + 1)
+  };
+
   useEffect(() => {
-    const getAllUsers = async () => {
+    const getSearchResult = async () => {
       try {
-        const { data }: { data: { users: userInterface[], page: number, totalPages: number, totalUsers: number } } = await axios.get(`${import.meta.env.VITE_URL}users?page=${currentPage}&limit=${usersPerPage} `)
-        setUsers([...data.users])
-        setInfo({
-          ...info,
-          page: data.page,
-          totalPages: data.totalPages,
-          totalUsers: data.totalUsers
-        })
+        const { data } = await axios.get(`${import.meta.env.VITE_URL}users?search=${name}&page=${currentPage}&domain=${filters.domain}&gender=${filters.gender}&available=${filters.available}`)
+        setSearchResults({ ...data })
         console.log(data)
       } catch (err) {
         console.log(err)
       }
-
     }
-    getAllUsers()
-  }, [currentPage, usersPerPage])
 
-  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+    getSearchResult()
 
-  function createArray(N: number) {
-    return Array.from({ length: N }, (_, index) => index + 1);
-  }
+  }, [name, currentPage, filters.available, filters.domain, filters.gender])
 
   return (
     <>
-      <h1 className='text-center text-xl sm:text-2xl py-2 shadow-md '>User Management App</h1>
-      {/* <div className='flex flex-wrap gap-y-10 p-4 sm:p-10'>
-        {users.map((user) => <Card user={user} />)}
-      </div> */}
-    
-      {/* <div className='flex border border-red-500 py-4 justify-evenly'>
-        {createArray(info.totalPages).map((item, index) => <div
-          onClick={() => paginate(item)}
-          className='bg-gray-200 px-1 py-1 text-xs cursor-pointer'>{item}</div>)}
-      </div> */}
-      <PaginatedItems />
+      <h1 className="text-center sm:text-xl py-2 border-b-2 border-gray-400">User Management App</h1>
+
+
+      <div className='p-1 shadow-md'>
+        <input
+          type="text"
+          placeholder="Search Name"
+          className="border border-gray-400 p-2 w-[90%] sm:w-[40%] mx-auto block rounded-md outline-none"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+      </div>
+
+
+      <div className='flex '>
+        <SideBar filters={filters} setFilters={setFilters} />
+        <div className=''>
+          <div className='flex flex-wrap gap-y-10 p-4 sm:p-10'>
+            {searcgResults?.users?.map((user) => <Card user={user} />)}
+          </div>
+          {searcgResults.totalPages === 1 ? <></> :
+            <Pagination
+              handlePageClick={handlePageClick}
+              pageCount={searcgResults.totalPages}
+            />
+          }
+        </div>
+      </div>
+
+      <>
+
+      </>
     </>
   )
 }
