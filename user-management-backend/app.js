@@ -4,6 +4,7 @@ const app =express()
 
 import  "./helper/dbConnection.js"
 import routes from './routes/index.js'
+import errorHandler from "./middlewares/errorHandler.js"
 
 
 app.use(function(req, res, next) {
@@ -23,6 +24,10 @@ app.use('/', routes);
 app.get('/', (_req, res) => {
   res.status(200).json({ message: 'Hello There!! You are at Backend' });
 });
+
+
+app.use(errorHandler)
+
 
 // handle the error safely
 process.on('uncaughtException', (err) => {

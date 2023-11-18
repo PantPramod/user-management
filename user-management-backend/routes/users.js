@@ -4,7 +4,6 @@ import createNewUser from "../controllers/users/createNewUser.js"
 import getUserById from "../controllers/users/getUserById.js"
 import deleteUserById from "../controllers/users/deleteUserById.js"
 import updateUser from "../controllers/users/updateUser.js"
-import User from "../models/user.js"
 import getAllDomains from "../controllers/users/getAllDomains.js"
 
 const router = express.Router()

@@ -9,10 +9,14 @@ const getAllUsers = async (req, res, next) => {
 
         // Define filter criteria
         const filterCriteria = {
-            ...(req.query.domain && { domain: req.query.domain }),
             ...(req.query.gender && { gender: req.query.gender }),
             ...(req.query.available !== undefined && { available: req.query.available === 'true' })
         };
+
+        if (req.query.domain) {
+            const domains = Array.isArray(req.query.domain) ? req.query.domain : [req.query.domain];
+            filterCriteria.domain = { $in: domains };
+        }
 
         const searchCriteria = {};
 
@@ -28,6 +32,7 @@ const getAllUsers = async (req, res, next) => {
         const users = await User.find(combinedCriteria)
             .skip(skip)
             .limit(limit)
+            .sort('id')
             .exec();
 
         const totalUsers = await User.countDocuments(combinedCriteria);

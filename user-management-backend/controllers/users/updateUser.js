@@ -2,7 +2,9 @@ import User from "../../models/user.js"
 
 const updateUser = async (req, res, next) => {
     try {
-        const updatedUser = await User.findOneAndUpdate({ id: req.params.id }, { ...req.body })
+        const updatedUser = await User.findOneAndUpdate({ id: req.params.id }, { ...req.body }, {
+            new: true
+        })
         res.send(updatedUser)
     } catch (err) {
         next(err)
