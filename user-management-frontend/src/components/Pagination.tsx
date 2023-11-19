@@ -14,7 +14,7 @@ const Pagination = ({ handlePageClick, pageCount }: propTypes) => {
                 previousLabel={PreviosLabel}
                 onPageChange={handlePageClick}
                 pageRangeDisplayed={3}
-                pageCount={pageCount}
+                pageCount={pageCount??0}
                 className='flex gap-x-2 sm:gap-x-4 md:gap-x-8 items-center justify-center'
                 pageClassName='px-1 sm:px-2 bg-gray-300 py-1 rounded-md '
                 activeClassName='bg-green-500 text-white'

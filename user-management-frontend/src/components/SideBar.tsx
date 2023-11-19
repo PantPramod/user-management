@@ -1,25 +1,12 @@
 import axios from 'axios'
-import { useEffect, useState, Dispatch, SetStateAction } from 'react'
+import { useEffect, useState } from 'react'
 import { IoIosClose } from "react-icons/io";
+import { sideBarPropTypes } from '../types';
 
-export type propTypes = {
-    filters: {
-        domain: string[],
-        gender: string,
-        available: string
-    }
-    setFilters: Dispatch<SetStateAction<{ domain: string[]; gender: string; available: string; }>>
-    setShowFilters: Dispatch<SetStateAction<boolean>>
-    showFilters: boolean
-}
 
-export interface filtersInterface {
-    domain: string[],
-    gender: string,
-    available: string,
 
-}
-const SideBar = ({ filters, setFilters, setShowFilters, showFilters }: propTypes) => {
+
+const SideBar = ({ filters, setFilters, setShowFilters, showFilters }: sideBarPropTypes) => {
     const [domains, setDomains] = useState<string[]>([])
 
     useEffect(() => {
@@ -32,9 +19,7 @@ const SideBar = ({ filters, setFilters, setShowFilters, showFilters }: propTypes
                 console.log(err)
             }
         }
-
         getAllDomains()
-
     }, [])
 
     return (
@@ -59,7 +44,9 @@ const SideBar = ({ filters, setFilters, setShowFilters, showFilters }: propTypes
 
                 </p>
                 {
-                    domains?.map((domain: string) => <div className='mt-1'>
+                    domains?.map((domain: string) => <div className='mt-1'
+                        key={domain}
+                    >
                         <input
                             checked={filters.domain.includes(domain)}
                             id={domain}

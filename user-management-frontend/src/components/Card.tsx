@@ -1,20 +1,20 @@
-import { Dispatch, SetStateAction } from "react"
-import { userInterface } from "../App"
+import { useNavigate } from "react-router-dom";
+import { toast } from 'react-toastify';
+import { cardPropTypes } from "../types";
+import { useAppDispatch } from "../app/hooks";
+import { decrement, increment, setValue } from "../features/user/userSlice";
 
-type propTypes = {
-    user: userInterface,
-    selectedUsers: userInterface[]
-    setSelectedUsers: Dispatch<SetStateAction<userInterface[]>>
-    index?: number
 
-}
 
 const Card = ({ user,
     setSelectedUsers,
     selectedUsers,
-
-}: propTypes) => {
+}: cardPropTypes) => {
+    const navigate = useNavigate()
     const { _id, avatar, available, first_name, last_name, id, gender, domain } = user
+    const dispatch = useAppDispatch()
+
+
 
     const isExist = () => {
         let userExist = false
@@ -34,7 +34,6 @@ const Card = ({ user,
         for (let i = 0; i < selectedUserslength; i++) {
             if (selectedUsers[i]._id === _id) {
                 return i
-
             }
         }
         return -1
@@ -53,20 +52,22 @@ const Card = ({ user,
         <div
             onClick={() => {
                 if (!available) {
-                    alert("User is not available")
+                    toast.error("User is not available")
                     return;
                 }
                 if (getIndex() === -1) {
                     if (isDomainPresent()) {
-                        alert("Same Domain Already Present!")
+                        toast.error("Same domain's user Already Added!")
                         return;
                     }
                     setSelectedUsers([...selectedUsers, user])
+                    dispatch(increment())
 
                 } else {
                     let index = getIndex()
                     selectedUsers.splice(index, 1)
                     setSelectedUsers([...selectedUsers])
+                    dispatch(decrement())
                 }
             }}
             key={_id}
@@ -82,6 +83,9 @@ const Card = ({ user,
             <p className="text-center mt-3 whitespace-nowrap text-sm font-semibold">{`${first_name} ${last_name}`}</p>
             <p className="text-center mt-1 whitespace-nowrap text-xs text-gray-600">Gender : {gender}</p>
             <p className="text-center mt-1 whitespace-nowrap text-xs text-gray-600">Domain : {domain}</p>
+            <p className="text-blue-500 text-center text-xs mt-1"
+                onClick={(e) => { e.stopPropagation(); navigate(`/${id}`); dispatch(setValue(0)) }}
+            >Show Details</p>
         </div>
     )
 }
